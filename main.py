@@ -108,17 +108,20 @@ def one_sentence_translate(sent, beam_search=True):
 
 def translate_example():
     """单句翻译示例"""
-    sent = "The near-term policy remedies are clear: raise the minimum wage to a level that will keep a " \
-           "fully employed worker and his or her family out of poverty, and extend the earned-income tax credit " \
-           "to childless workers."
-    # tgt: 近期的政策对策很明确：把最低工资提升到足以一个全职工人及其家庭免于贫困的水平，扩大对无子女劳动者的工资所得税减免。
+    sent = "1041 0 1005 1107"
+    #1041 0 1005 1107
+    
+    # tgt: K Y Q K L	1042 0 1015 1108
+    # tgt: Y H V  933 0 882 1033
+    # tgt: Y H R D  974 0 921 1042
+
     one_sentence_translate(sent, beam_search=True)
 
 
 if __name__ == "__main__":
     import os
-    os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
+    #os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
     import warnings
     warnings.filterwarnings('ignore')
-    # run()
+    #run()
     translate_example()

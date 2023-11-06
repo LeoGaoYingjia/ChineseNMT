@@ -1,7 +1,7 @@
 import json
 
 if __name__ == "__main__":
-    files = ['train', 'dev', 'test']
+    files = ['mytrain', 'mydev', 'mytest']
     ch_path = 'corpus.ch'
     en_path = 'corpus.en'
     ch_lines = []
