@@ -123,5 +123,5 @@ if __name__ == "__main__":
     #os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
     import warnings
     warnings.filterwarnings('ignore')
-    #run()
+    run()
     translate_example()
