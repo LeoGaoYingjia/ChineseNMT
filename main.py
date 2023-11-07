@@ -10,6 +10,7 @@ from train import train, test, translate
 from data_loader import MTDataset
 from utils import english_tokenizer_load
 from model import make_model, LabelSmoothing
+from generator import Generator
 
 
 class NoamOpt:
@@ -103,19 +104,67 @@ def one_sentence_translate(sent, beam_search=True):
     EOS = english_tokenizer_load().eos_id()  # 3
     src_tokens = [[BOS] + english_tokenizer_load().EncodeAsIds(sent) + [EOS]]
     batch_input = torch.LongTensor(np.array(src_tokens)).to(config.device)
-    translate(batch_input, model, use_beam=beam_search)
+    translation = translate(batch_input, model, use_beam=beam_search)
+    return translation
 
 
 def translate_example():
     """单句翻译示例"""
-    sent = "1041 0 1005 1107"
+    #sent = "933 0 882 1033"
+    
     #1041 0 1005 1107
     
-    # tgt: K Y Q K L	1042 0 1015 1108
+    # tgt: K E P	1048 0 1009 1106
     # tgt: Y H V  933 0 882 1033
     # tgt: Y H R D  974 0 921 1042
+    
+    gen = Generator()
 
-    one_sentence_translate(sent, beam_search=True)
+    evalpath = './data/json/eval.txt'
+    f = open(evalpath, 'r')
+    lines = f.readlines()
+    total = 0
+    correct = 0
+    diff = 0
+    for i in lines:
+        input_val = i.split("\t")[1].split('\n')[0]
+        expect_tgt = i.split("\t")[0]
+        print('input_val = ', input_val)
+        print('expect_tgt = ', expect_tgt)
+        sent = input_val
+        output = one_sentence_translate(sent, beam_search=True)
+        print('output = ', output)
+        combine = []
+        tokens_pc = ''
+        for j in output:
+            if j != ' ':
+                combine.append(j)
+        combine.append('<EOS>')
+        #print(combine)
+        tokens_pot, tokens_cap = gen.get(combine)
+        if len(tokens_cap) != 0:
+            tokens_cap = tokens_cap[:-1]
+        for i in tokens_pot:
+            tokens_pc = tokens_pc + str(i) +' '
+        for i in tokens_cap:
+            tokens_pc = tokens_pc + str(i) +' '
+        tokens_pc = tokens_pc[:-1]
+        output_val = tokens_pc + '\n'
+        inputv = input_val.split(" ")
+        outputv = output_val[:- 1].split(" ")
+        for i in range(len(inputv)):
+            total += 1
+            if(inputv[i] == outputv[i]):
+                correct += 1
+            else:
+                diff += abs(int(inputv[i]) - int(outputv[i]))
+        print('output_val = ', output_val)
+    print('accuracy = ', correct/total)
+    print('average_difference = ', diff/(total-correct))
+        
+
+    
+
 
 
 if __name__ == "__main__":
@@ -123,5 +172,5 @@ if __name__ == "__main__":
     #os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
     import warnings
     warnings.filterwarnings('ignore')
-    run()
+    #run()
     translate_example()

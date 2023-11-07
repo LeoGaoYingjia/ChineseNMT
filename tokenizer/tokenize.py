@@ -22,9 +22,9 @@ def train(input_file, vocab_size, model_name, model_type, character_coverage):
 
 
 def run():
-    en_input = '../data/corpus.en'
-    en_vocab_size = 27
-    en_model_name = 'eng'
+    en_input = '../data/corpus.en2'
+    en_vocab_size = 1400
+    en_model_name = 'eng2'
     en_model_type = 'bpe'
     en_character_coverage = 1
     train(en_input, en_vocab_size, en_model_name, en_model_type, en_character_coverage)
