@@ -3,6 +3,7 @@ import config
 import logging
 import numpy as np
 
+
 import torch
 from torch.utils.data import DataLoader
 
@@ -11,6 +12,7 @@ from data_loader import MTDataset
 from utils import english_tokenizer_load
 from model import make_model, LabelSmoothing
 from generator import Generator
+from tqdm import tqdm
 
 
 class NoamOpt:
@@ -126,14 +128,11 @@ def translate_example():
     total = 0
     correct = 0
     diff = 0
-    for i in lines:
-        input_val = i.split("\t")[1].split('\n')[0]
-        expect_tgt = i.split("\t")[0]
-        print('input_val = ', input_val)
-        print('expect_tgt = ', expect_tgt)
+    for i in tqdm(range(len(lines))):
+        input_val = lines[i].split("\t")[1].split('\n')[0]
+        expect_tgt = lines[i].split("\t")[0]
         sent = input_val
         output = one_sentence_translate(sent, beam_search=True)
-        print('output = ', output)
         combine = []
         tokens_pc = ''
         for j in output:
@@ -144,26 +143,33 @@ def translate_example():
         tokens_pot, tokens_cap = gen.get(combine)
         if len(tokens_cap) != 0:
             tokens_cap = tokens_cap[:-1]
-        for i in tokens_pot:
-            tokens_pc = tokens_pc + str(i) +' '
-        for i in tokens_cap:
-            tokens_pc = tokens_pc + str(i) +' '
+        for j in tokens_pot:
+            tokens_pc = tokens_pc + str(j) +' '
+        for j in tokens_cap:
+            tokens_pc = tokens_pc + str(j) +' '
         tokens_pc = tokens_pc[:-1]
         output_val = tokens_pc + '\n'
         inputv = input_val.split(" ")
         outputv = output_val[:- 1].split(" ")
-        for i in range(len(inputv)):
-            total += 1
-            if(inputv[i] == outputv[i]):
-                correct += 1
-            else:
-                diff += abs(int(inputv[i]) - int(outputv[i]))
-        print('output_val = ', output_val)
+        if len(inputv) != len(outputv):
+            print('input_val = ', input_val)
+            print('expect_tgt = ', expect_tgt)
+            print('output = ', output)
+            print('output_val = ', output_val)
+            total += len(inputv)
+        else:
+            for j in range(len(inputv)):
+                total += 1
+                if(inputv[j] == outputv[j]):
+                    correct += 1
+                else:
+                    diff += abs(int(inputv[j]) - int(outputv[j]))
+                    print('input_val = ', input_val)
+                    print('expect_tgt = ', expect_tgt)
+                    print('output = ', output)
+                    print('output_val = ', output_val)
     print('accuracy = ', correct/total)
     print('average_difference = ', diff/(total-correct))
-        
-
-    
 
 
 
@@ -172,5 +178,5 @@ if __name__ == "__main__":
     #os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
     import warnings
     warnings.filterwarnings('ignore')
-    #run()
+    run()
     translate_example()

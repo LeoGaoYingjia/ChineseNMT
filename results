@@ -1,0 +1,5 @@
+train: mytrain.json(4032)
+validation: eval.txt(1001)
+
+accuracy =  0.8225331369661266
+average_difference =  41.488243430152146

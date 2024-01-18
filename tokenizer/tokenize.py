@@ -23,7 +23,7 @@ def train(input_file, vocab_size, model_name, model_type, character_coverage):
 
 def run():
     en_input = '../data/corpus.en2'
-    en_vocab_size = 1400
+    en_vocab_size = 1517
     en_model_name = 'eng2'
     en_model_type = 'bpe'
     en_character_coverage = 1
@@ -33,7 +33,7 @@ def run():
     ch_vocab_size = 27
     ch_model_name = 'chn'
     ch_model_type = 'bpe'
-    ch_character_coverage = 0.9995
+    ch_character_coverage = 1
     train(ch_input, ch_vocab_size, ch_model_name, ch_model_type, ch_character_coverage)
 
 

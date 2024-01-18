@@ -10,10 +10,10 @@ dropout = 0.1
 padding_idx = 0
 bos_idx = 2
 eos_idx = 3
-src_vocab_size = 1400
+src_vocab_size = 1517
 tgt_vocab_size = 27
 batch_size = 32
-epoch_num = 20
+epoch_num = 30
 early_stop = 5
 lr = 3e-4
 
